@@ -7,5 +7,7 @@
             "System\\": "system/"
         }
     },
-    "require": {}
+    "require": {
+        "robthree/twofactorauth": "^3.0"
+    }
 }

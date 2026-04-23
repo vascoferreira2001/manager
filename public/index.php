@@ -11,3 +11,5 @@ require_once __DIR__ . '/../config/routes.php';
 
 // Dispatch request
 $router->dispatch($_SERVER['REQUEST_URI']);
+
+require_once __DIR__ . '/../system/Bootstrap.php';

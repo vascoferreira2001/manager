@@ -11,6 +11,10 @@ class ComposerStaticInit05f1f9627a8993c64b716e91b0ff5e92
         array (
             'System\\' => 7,
         ),
+        'R' =>
+        array (
+            'RobThree\\Auth\\' => 14,
+        ),
         'A' =>
         array (
             'App\\' => 4,
@@ -21,6 +25,10 @@ class ComposerStaticInit05f1f9627a8993c64b716e91b0ff5e92
         'System\\' =>
         array (
             0 => __DIR__ . '/../..' . '/system',
+        ),
+        'RobThree\\Auth\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/robthree/twofactorauth/lib',
         ),
         'App\\' =>
         array (

@@ -1,0 +1,11 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150) UNIQUE,
+    password VARCHAR(255),
+    role VARCHAR(50),
+    twofa_secret VARCHAR(255) NULL,
+    twofa_enabled TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
