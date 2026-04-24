@@ -28,11 +28,24 @@ class Router
         $uri = parse_url($uri, PHP_URL_PATH);
 
 
+    
         if (isset($this->middlewares[$uri])) {
-            foreach ($this->middlewares[$uri] as $middleware) {
-                $middleware::check();
-            }
+
+    foreach ($this->middlewares[$uri] as $middleware) {
+
+        // 👇 NOVO: suporta middleware com parâmetros
+        if (is_array($middleware)) {
+
+            [$class, $param] = $middleware;
+
+            $class::handle($param);
+
+        } else {
+
+            $middleware::check();
+    }
         }
+}
 
         $action = $this->routes[$method][$uri] ?? null;
 
