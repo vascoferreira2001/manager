@@ -155,3 +155,11 @@ $router->middleware('/invoices/store', [
     \App\Modules\Auth\Middleware\AuthMiddleware::class,
     [\App\Modules\Auth\Middleware\PermissionMiddleware::class, 'manage_invoices']
 ]);
+
+$router->get('/pay', 'Billing\PaymentController@checkout');
+
+$router->middleware('/pay', [
+    \App\Modules\Auth\Middleware\AuthMiddleware::class
+]);
+
+$router->post('/stripe/webhook', 'Billing\WebhookController@handle');

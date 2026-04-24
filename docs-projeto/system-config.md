@@ -236,3 +236,29 @@ Sistema recebe pagamento
 Invoice → PAID
     ↓
 (automação futura → provisionamento hosting)
+
+## Fluxo completo (Stripe)
+
+Cliente → Clica pagar
+    ↓
+Sistema cria Stripe Checkout Session
+    ↓
+Cliente paga no Stripe
+    ↓
+Stripe envia Webhook
+    ↓
+Sistema marca Invoice como PAID
+
+
+## WEBHOOK NO STRIPE (ATIVAR AINDA)
+
+🌐 8. Configurar Webhook no Stripe
+Vai ao dashboard Stripe:
+👉 Developers → Webhooks
+Adiciona:
+http://teusite.com/stripe/webhook
+Eventos:
+checkout.session.completed
+🧪 9. Testes locais (importante)
+Usa Stripe CLI:
+stripe listen --forward-to localhost/stripe/webhook

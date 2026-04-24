@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'System\\' => array($baseDir . '/system'),
+    'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
     'RobThree\\Auth\\' => array($vendorDir . '/robthree/twofactorauth/lib'),
     'App\\' => array($baseDir . '/app'),
 );
