@@ -108,3 +108,28 @@ AND p.slug IN (
 INSERT INTO user_roles (user_id, role_id)
 SELECT 1, id FROM roles WHERE slug = 'admin';
 
+CREATE TABLE invoices (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    total DECIMAL(10,2),
+    status ENUM('draft','unpaid','paid','overdue','cancelled') DEFAULT 'draft',
+    due_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE invoice_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT,
+    description VARCHAR(255),
+    quantity INT,
+    price DECIMAL(10,2)
+);
+
+CREATE TABLE payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    invoice_id INT,
+    amount DECIMAL(10,2),
+    method VARCHAR(50),
+    transaction_id VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

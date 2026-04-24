@@ -166,7 +166,7 @@ client
  ├── acesso ao portal
  ├── ver serviços próprios
 
- 
+
 ## Sistema de Integrações
 
 Pagamentos
@@ -210,3 +210,29 @@ Update runner:
 
 Rollback capability
 
+## Cron no Servidor 
+
+php /var/www/vhosts/teusite.com/httpdocs/cron.php
+
+## Integração futura com pagamentos
+Mais tarde vais ligar isto a:
+Stripe
+PayPal
+Transferência manual
+
+Fluxo:
+Pagamento → webhook → marcar invoice como paid
+
+Fluxo completo do sistema
+
+Admin cria invoice
+    ↓
+Cliente recebe
+    ↓
+Cliente paga
+    ↓
+Sistema recebe pagamento
+    ↓
+Invoice → PAID
+    ↓
+(automação futura → provisionamento hosting)
