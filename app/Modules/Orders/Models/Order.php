@@ -26,12 +26,13 @@ class Order
         $db = Database::connect();
 
         $stmt = $db->prepare("
-            INSERT INTO order_items (order_id, product_name, quantity, price)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO order_items (order_id, product_id, product_name, quantity, price)
+            VALUES (?, ?, ?, ?, ?)
         ");
 
         return $stmt->execute([
             $orderId,
+            $item['product_id'],
             $item['name'],
             $item['quantity'],
             $item['price']

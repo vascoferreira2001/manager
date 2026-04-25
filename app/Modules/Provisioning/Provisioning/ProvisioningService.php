@@ -2,9 +2,10 @@
 
 namespace App\Modules\Provisioning\Services;
 
+use System\Database;
 use App\Modules\Provisioning\Drivers\PleskDriver;
 use App\Modules\Provisioning\DTO\ProvisioningData;
-use System\Database;
+use App\Modules\Products\Models\Product;
 
 class ProvisioningService
 {
@@ -22,7 +23,7 @@ class ProvisioningService
             return; // já provisionado
         }
 
-        // 🔎 Buscar cliente
+        // 👤 Cliente
         $stmt = $db->prepare("
             SELECT c.name, c.email
             FROM clients c
@@ -37,7 +38,29 @@ class ProvisioningService
             throw new \Exception("Cliente não encontrado");
         }
 
-        // ⚠️ TEMPORÁRIO (depois vem de produtos)
+        // 📦 Produto da order
+        $stmt = $db->prepare("
+            SELECT product_id
+            FROM order_items
+            WHERE order_id = ?
+            LIMIT 1
+        ");
+        $stmt->execute([$orderId]);
+
+        $item = $stmt->fetch();
+
+        if (!$item) {
+            throw new \Exception("Produto não encontrado na order");
+        }
+
+        // 📋 Plano do produto
+        $plan = Product::getPlan($item['product_id']);
+
+        if (!$plan) {
+            throw new \Exception("Plano não configurado para este produto");
+        }
+
+        // 🌐 Dados de hosting
         $domain = "cliente{$orderId}.cybercore.pt";
         $username = "user{$orderId}";
         $password = bin2hex(random_bytes(6));
@@ -47,7 +70,8 @@ class ProvisioningService
             'username' => $username,
             'password' => $password,
             'email' => $client['email'],
-            'name' => $client['name']
+            'name' => $client['name'],
+            'plan' => $plan['plesk_plan_name']
         ]);
 
         $driver = new PleskDriver();
@@ -56,23 +80,37 @@ class ProvisioningService
 
             $response = $driver->create($data);
 
-            // 💾 Guardar sucesso
+            // 💾 Sucesso
             $stmt = $db->prepare("
-                INSERT INTO hosting_accounts (order_id, domain, username, password, status)
+                INSERT INTO hosting_accounts 
+                (order_id, domain, username, password, status)
                 VALUES (?, ?, ?, ?, 'active')
             ");
-            $stmt->execute([$orderId, $domain, $username, $password]);
+
+            $stmt->execute([
+                $orderId,
+                $domain,
+                $username,
+                $password
+            ]);
 
             return $response;
 
         } catch (\Exception $e) {
 
-            // 💾 Guardar falha
+            // 💾 Falha
             $stmt = $db->prepare("
-                INSERT INTO hosting_accounts (order_id, domain, username, password, status)
+                INSERT INTO hosting_accounts 
+                (order_id, domain, username, password, status)
                 VALUES (?, ?, ?, ?, 'failed')
             ");
-            $stmt->execute([$orderId, $domain, $username, $password]);
+
+            $stmt->execute([
+                $orderId,
+                $domain,
+                $username,
+                $password
+            ]);
 
             throw $e;
         }

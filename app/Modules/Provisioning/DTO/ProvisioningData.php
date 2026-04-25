@@ -9,6 +9,7 @@ class ProvisioningData
     public string $password;
     public string $email;
     public string $name;
+    public string $plan;
 
     public function __construct($data)
     {
@@ -17,5 +18,6 @@ class ProvisioningData
         $this->password = $data['password'];
         $this->email = $data['email'];
         $this->name = $data['name'];
+        $this->plan = $data['plan'];
     }
 }

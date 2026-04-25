@@ -15,7 +15,7 @@ class PleskDriver
         $ch = curl_init();
 
         curl_setopt_array($ch, [
-            CURLOPT_URL => $config['host'] . '/api/v2' . $endpoint,
+            CURLOPT_URL => rtrim($config['host'], '/') . '/api/v2' . $endpoint,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($data),
@@ -23,18 +23,25 @@ class PleskDriver
                 'Content-Type: application/json',
                 'Authorization: Basic ' . $auth
             ],
-            CURLOPT_SSL_VERIFYPEER => false
+            CURLOPT_SSL_VERIFYPEER => false // DEV only
         ]);
 
         $response = curl_exec($ch);
 
         if (curl_errno($ch)) {
-            throw new \Exception('Erro cURL: ' . curl_error($ch));
+            throw new \Exception('Plesk cURL error: ' . curl_error($ch));
         }
 
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
-        return json_decode($response, true);
+        $decoded = json_decode($response, true);
+
+        if ($httpCode >= 400) {
+            throw new \Exception('Plesk API error: ' . $response);
+        }
+
+        return $decoded;
     }
 
     public function create(ProvisioningData $data)
@@ -45,12 +52,15 @@ class PleskDriver
             'email' => $data->email
         ]);
 
-        // 2. Criar subscription
+        // 2. Criar hosting subscription
         return $this->request('/webspaces', [
             'name' => $data->domain,
             'hosting_type' => 'virtual',
             'login' => $data->username,
-            'password' => $data->password
+            'password' => $data->password,
+            'plan' => [
+                'name' => $data->plan
+            ]
         ]);
     }
 }
