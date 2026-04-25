@@ -174,3 +174,10 @@ $router->middleware('/orders/create', [
 $router->middleware('/orders/store', [
     \App\Modules\Auth\Middleware\AuthMiddleware::class
 ]);
+
+$router->middleware('/dashboard', [
+    \App\Modules\Auth\Middleware\AuthMiddleware::class
+]);
+
+$router->get('/dashboard', 'Clients\DashboardController@index');
+$router->get('/dashboard/hosting', 'Clients\DashboardController@hosting');
