@@ -163,3 +163,14 @@ $router->middleware('/pay', [
 ]);
 
 $router->post('/stripe/webhook', 'Billing\WebhookController@handle');
+
+$router->get('/orders/create', 'Orders\OrderController@create');
+$router->post('/orders/store', 'Orders\OrderController@store');
+
+$router->middleware('/orders/create', [
+    \App\Modules\Auth\Middleware\AuthMiddleware::class
+]);
+
+$router->middleware('/orders/store', [
+    \App\Modules\Auth\Middleware\AuthMiddleware::class
+]);

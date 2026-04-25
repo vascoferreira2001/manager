@@ -133,3 +133,22 @@ CREATE TABLE payments (
     transaction_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    status ENUM('pending','paid','cancelled') DEFAULT 'pending',
+    total DECIMAL(10,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    product_name VARCHAR(255),
+    quantity INT,
+    price DECIMAL(10,2)
+);
+
+ALTER TABLE invoices ADD order_id INT NULL;
+

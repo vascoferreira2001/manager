@@ -12,15 +12,16 @@ class Invoice
         $db = Database::connect();
 
         $stmt = $db->prepare("
-            INSERT INTO invoices (client_id, total, status, due_date)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO invoices (client_id, total, status, due_date, order_id)
+        VALUES (?, ?, ?, ?, ?)
         ");
 
         $stmt->execute([
             $data['client_id'],
             $data['total'],
             'unpaid',
-            $data['due_date']
+            $data['due_date'],
+            $data['order_id'] ?? null
         ]);
 
         return $db->lastInsertId();

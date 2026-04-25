@@ -13,3 +13,5 @@ require_once __DIR__ . '/../config/routes.php';
 $router->dispatch($_SERVER['REQUEST_URI']);
 
 require_once __DIR__ . '/../system/Bootstrap.php';
+
+require_once __DIR__ . '/../system/helpers.php';

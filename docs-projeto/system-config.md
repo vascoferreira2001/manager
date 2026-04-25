@@ -262,3 +262,18 @@ checkout.session.completed
 🧪 9. Testes locais (importante)
 Usa Stripe CLI:
 stripe listen --forward-to localhost/stripe/webhook
+
+## Fluxo do sistema (fundamental)
+
+Cliente escolhe produto
+    ↓
+Cria ORDER
+    ↓
+Sistema gera INVOICE automaticamente
+    ↓
+Cliente paga (Stripe)
+    ↓
+Webhook → marca invoice como PAID
+    ↓
+(Próximo passo: provisionamento automático)
+

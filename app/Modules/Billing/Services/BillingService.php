@@ -6,7 +6,7 @@ use App\Modules\Billing\Models\Invoice;
 
 class BillingService
 {
-    public static function createInvoice($clientId, $items, $dueDate)
+    public static function createInvoice($clientId, $items, $dueDate, $orderId = null)
     {
         $total = 0;
 
@@ -17,7 +17,8 @@ class BillingService
         $invoiceId = Invoice::create([
             'client_id' => $clientId,
             'total' => $total,
-            'due_date' => $dueDate
+            'due_date' => $dueDate,
+            'order_id' => $orderId
         ]);
 
         foreach ($items as $item) {
