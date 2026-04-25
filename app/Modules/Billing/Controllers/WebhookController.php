@@ -7,6 +7,8 @@ use App\Modules\Billing\Models\Invoice;
 use App\Modules\Orders\Models\Order;
 use System\Database;
 
+use App\Modules\Provisioning\Services\ProvisioningService;
+
 class WebhookController
 {
     public function handle()
@@ -29,35 +31,85 @@ class WebhookController
             exit();
         }
 
-        if ($event->type === 'checkout.session.completed') {
+if ($event->type === 'checkout.session.completed') {
 
-            $session = $event->data->object;
+    $session = $event->data->object;
 
-            $invoiceId = $session->metadata->invoice_id ?? null;
+    if ($session->payment_status !== 'paid') {
+        http_response_code(200);
+        return;
+    }
 
-            if ($invoiceId) {
+    $invoiceId = $session->metadata->invoice_id ?? null;
 
-                // 1. Marcar invoice como paga
-                Invoice::markAsPaid($invoiceId);
+    if (!$invoiceId) {
+        http_response_code(400);
+        return;
+    }
 
-                // 2. Obter order associada
-                $db = Database::connect();
+    $db = Database::connect();
 
-                $stmt = $db->prepare("
-                    SELECT order_id FROM invoices WHERE id = ?
-                ");
+    try {
 
-                $stmt->execute([$invoiceId]);
+        $db->beginTransaction();
 
-                $orderId = $stmt->fetchColumn();
+        $stmt = $db->prepare("
+            SELECT id, status, order_id 
+            FROM invoices 
+            WHERE id = ?
+            FOR UPDATE
+        ");
+        $stmt->execute([$invoiceId]);
 
-                // 3. Marcar order como paga
-                if ($orderId) {
-                    Order::markAsPaid($orderId);
-                }
+        $invoice = $stmt->fetch();
+
+        if (!$invoice) {
+            throw new \Exception("Invoice não encontrada");
+        }
+
+        if ($invoice['status'] === 'paid') {
+            $db->commit();
+            http_response_code(200);
+            return;
+        }
+
+        // Invoice → paid
+        $stmt = $db->prepare("
+            UPDATE invoices SET status = 'paid' WHERE id = ?
+        ");
+        $stmt->execute([$invoiceId]);
+
+        $orderId = $invoice['order_id'] ?? null;
+
+        // Order → paid
+        if ($orderId) {
+            $stmt = $db->prepare("
+                UPDATE orders SET status = 'paid' WHERE id = ?
+            ");
+            $stmt->execute([$orderId]);
+        }
+
+        $db->commit();
+
+        // 🚀 Provisionamento fora da transação
+        if ($orderId) {
+            try {
+                ProvisioningService::provisionOrder($orderId);
+            } catch (\Exception $e) {
+                error_log("Provisioning Error: " . $e->getMessage());
             }
         }
 
-        http_response_code(200);
+    } catch (\Exception $e) {
+
+        $db->rollBack();
+
+        error_log("Stripe Webhook Error: " . $e->getMessage());
+
+        http_response_code(500);
+        return;
+    }
+}
+
     }
 }

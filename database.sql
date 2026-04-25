@@ -152,3 +152,20 @@ CREATE TABLE order_items (
 
 ALTER TABLE invoices ADD order_id INT NULL;
 
+CREATE TABLE webhook_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id VARCHAR(255),
+    type VARCHAR(50),
+    payload JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE hosting_accounts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    domain VARCHAR(255),
+    username VARCHAR(100),
+    password VARCHAR(255),
+    status ENUM('active','pending','failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

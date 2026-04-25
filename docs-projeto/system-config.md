@@ -277,3 +277,22 @@ Webhook → marca invoice como PAID
     ↓
 (Próximo passo: provisionamento automático)
 
+## Fluxo final (com Plesk)
+
+Cliente compra hosting
+    ↓
+Order criada
+    ↓
+Invoice gerada
+    ↓
+Pagamento (Stripe)
+    ↓
+Webhook
+    ↓
+Invoice = PAID
+Order = PAID
+    ↓
+🔥 Provisionamento automático no Plesk
+    ↓
+Conta criada + credenciais enviadas
+
