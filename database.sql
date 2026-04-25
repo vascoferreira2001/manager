@@ -169,3 +169,23 @@ CREATE TABLE hosting_accounts (
     status ENUM('active','pending','failed') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10,2),
+    billing_cycle ENUM('monthly','yearly'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE product_plans (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    plesk_plan_name VARCHAR(255),
+    disk_space INT,
+    bandwidth INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE order_items ADD product_id INT;
