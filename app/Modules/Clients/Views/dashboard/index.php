@@ -1,20 +1,50 @@
-<h1>Dashboard Cliente</h1>
+<h1 class="mb-4">Dashboard</h1>
 
-<h3>Hosting</h3>
+<div class="row mb-4">
 
+    <div class="col-md-4">
+        <div class="card card-box p-3">
+            <h6>Serviços Ativos</h6>
+            <h3><?= count($data['hosting']) ?></h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-box p-3">
+            <h6>Faturas</h6>
+            <h3><?= count($data['invoices']) ?></h3>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card card-box p-3">
+            <h6>Ordens</h6>
+            <h3><?= count($data['orders']) ?></h3>
+        </div>
+    </div>
+
+</div>
+
+<h4>Serviços Recentes</h4>
+
+<div class="row">
 <?php foreach ($data['hosting'] as $h): ?>
-    <div>
-        <strong><?= $h['domain'] ?></strong><br>
-        Status: <?= $h['status'] ?><br>
-        Username: <?= $h['username'] ?>
-    </div>
-    <hr>
-<?php endforeach; ?>
 
-<h3>Invoices</h3>
+    <div class="col-md-4 mb-3">
+        <div class="card card-box p-3">
 
-<?php foreach ($data['invoices'] as $i): ?>
-    <div>
-        Invoice #<?= $i['id'] ?> - <?= $i['status'] ?>
+            <h5><?= $h['domain'] ?></h5>
+
+            <p class="
+                status-<?= $h['status'] ?>
+            ">
+                <?= strtoupper($h['status']) ?>
+            </p>
+
+            <small>User: <?= $h['username'] ?></small>
+
+        </div>
     </div>
+
 <?php endforeach; ?>
+</div>

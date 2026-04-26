@@ -1,10 +1,37 @@
-<h1>Meus Hosting</h1>
+<h1 class="mb-4">Meus Serviços de Hosting</h1>
 
-<?php foreach ($data['hosting'] as $h): ?>
-    <div style="border:1px solid #ccc;padding:10px;margin-bottom:10px;">
-        <strong><?= $h['domain'] ?></strong><br>
-        Status: <?= $h['status'] ?><br>
-        Username: <?= $h['username'] ?><br>
-        Password: <?= $h['password'] ?>
-    </div>
-<?php endforeach; ?>
+<div class="card card-box">
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Domínio</th>
+                <th>Status</th>
+                <th>Username</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+        <?php foreach ($data['hosting'] as $h): ?>
+            <tr>
+                <td><?= $h['domain'] ?></td>
+
+                <td class="status-<?= $h['status'] ?>">
+                    <?= $h['status'] ?>
+                </td>
+
+                <td><?= $h['username'] ?></td>
+
+                <td>
+                    <button class="btn btn-sm btn-primary">
+                        Gerir
+                    </button>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+
+        </tbody>
+    </table>
+</div>

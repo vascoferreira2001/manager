@@ -19,7 +19,10 @@ class DashboardController
 
         $data = ClientDashboardService::getOverview($clientId);
 
+        ob_start();
         require __DIR__ . '/../Views/dashboard/index.php';
+        $content = ob_get_clean();
+        require __DIR__ . '/../Views/layout.php';
     }
 
     public function hosting()
