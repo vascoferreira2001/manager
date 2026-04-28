@@ -35,6 +35,7 @@ class PleskDriver
         return json_decode($response, true);
     }
 
+
     public function changePassword($domain, $password)
     {
         return $this->request("/webspaces/{$domain}", [
@@ -44,6 +45,23 @@ class PleskDriver
         ], 'PUT');
     }
 
+    public function create(\App\Modules\Provisioning\DTO\ProvisioningData $data)
+    {
+        $payload = [
+            'domain' => $data->domain,
+            'hosting' => [
+                'login' => $data->username,
+                'password' => $data->password,
+                'plan' => $data->plan
+            ],
+            'owner' => [
+                'email' => $data->email,
+                'name' => $data->name
+            ]
+        ];
+
+        return $this->request('/webspaces', $payload, 'POST');
+    }
     public function suspend($domain)
     {
         return $this->request("/webspaces/{$domain}/suspend");
