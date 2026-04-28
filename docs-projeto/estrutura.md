@@ -59,8 +59,15 @@
 │  │  │  └─ Services/
 │  │  │     └─ BillingService.php
 │  │  ├─ Clients/
-│  │  │  └─ Controllers/
-│  │  │     └─ ClientController.php
+│  │  │  ├─ Controllers/
+│  │  │  │  └─ ClientController.php
+│  │  │  ├─ Services/
+│  │  │  │  └─ ClientDashboardService.php
+│  │  │  └─ Views/
+│  │  │     └─ dashboard/
+│  │  │        ├─ hosting.php
+│  │  │        ├─ index.php
+│  │  │        └─ manager.php
 │  │  ├─ Domains/ (vazia)
 │  │  ├─ Orders/
 │  │  │  ├─ Controllers/

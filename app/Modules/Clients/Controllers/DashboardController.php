@@ -22,6 +22,7 @@ class DashboardController
         ob_start();
         require __DIR__ . '/../Views/dashboard/index.php';
         $content = ob_get_clean();
+
         require __DIR__ . '/../Views/layout.php';
     }
 
@@ -38,6 +39,10 @@ class DashboardController
 
         $data = ClientDashboardService::getOverview($clientId);
 
+        ob_start();
         require __DIR__ . '/../Views/dashboard/hosting.php';
+        $content = ob_get_clean();
+
+        require __DIR__ . '/../Views/layout.php';
     }
 }
