@@ -1,14 +1,16 @@
 {
-    "name": "cybercore/whms",
-    "description": "Web Hosting Management System",
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/",
-            "System\\": "system/"
-        }
+  "name": "yourcompany/whms",
+  "description": "Web Hosting Management System (Core)",
+  "type": "project",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
     },
-    "require": {
-        "robthree/twofactorauth": "^3.0",
-        "stripe/stripe-php": "^20.1"
-    }
+    "files": [
+      "app/Core/Support/helpers.php"
+    ]
+  }
 }
