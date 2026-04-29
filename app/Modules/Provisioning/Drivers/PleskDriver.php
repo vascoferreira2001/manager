@@ -2,88 +2,124 @@
 
 namespace App\Modules\Provisioning\Drivers;
 
+use App\Modules\Provisioning\DTO\ProvisioningData;
+
 class PleskDriver
 {
-    private function request($endpoint, $data = [], $method = 'POST')
+    private string $baseUrl;
+    private string $auth;
+
+    public function __construct()
     {
         $config = require __DIR__ . '/../../../../Config/plesk.php';
 
-        $auth = base64_encode($config['username'] . ':' . $config['password']);
+        $this->baseUrl = rtrim($config['host'], '/') . '/api/v2';
+        $this->auth = base64_encode($config['username'] . ':' . $config['password']);
+    }
 
-        $ch = curl_init();
-
-        curl_setopt_array($ch, [
-            CURLOPT_URL => rtrim($config['host'], '/') . '/api/v2' . $endpoint,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Basic ' . $auth
-            ],
-            CURLOPT_SSL_VERIFYPEER => false
+    // =========================
+    // 🚀 CREATE HOSTING
+    // =========================
+    public function create(ProvisioningData $data)
+    {
+        return $this->request('POST', '/webspaces', [
+            'name' => $data->domain,
+            'hosting_type' => 'virtual',
+            'owner_login' => $data->username,
+            'owner_password' => $data->password,
+            'plan' => $data->plan
         ]);
-
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            throw new \Exception(curl_error($ch));
-        }
-
-        curl_close($ch);
-
-        return json_decode($response, true);
     }
 
-
-    public function changePassword($domain, $password)
-    {
-        return $this->request("/webspaces/{$domain}", [
-            'hosting_settings' => [
-                'password' => $password
-            ]
-        ], 'PUT');
-    }
-
-    public function create(\App\Modules\Provisioning\DTO\ProvisioningData $data)
-    {
-        $payload = [
-            'domain' => $data->domain,
-            'hosting' => [
-                'login' => $data->username,
-                'password' => $data->password,
-                'plan' => $data->plan
-            ],
-            'owner' => [
-                'email' => $data->email,
-                'name' => $data->name
-            ]
-        ];
-
-        return $this->request('/webspaces', $payload, 'POST');
-    }
+    // =========================
+    // 🔒 SUSPEND
+    // =========================
     public function suspend($domain)
     {
-        return $this->request("/webspaces/{$domain}/suspend");
+        return $this->request('PUT', "/webspaces/{$domain}/suspend");
     }
 
     public function unsuspend($domain)
     {
-        return $this->request("/webspaces/{$domain}/unsuspend");
+        return $this->request('PUT', "/webspaces/{$domain}/unsuspend");
     }
 
-    public function generateLoginUrl($domain)
+    // =========================
+    // 🔑 RESET PASSWORD
+    // =========================
+    public function changePassword($domain, $password)
     {
-        $response = $this->request("/server/login", [
-            'params' => [
-                'domain' => $domain
+        return $this->request('PUT', "/webspaces/{$domain}", [
+            'hosting' => [
+                'ftp_login' => $domain,
+                'ftp_password' => $password
             ]
         ]);
+    }
 
-        if (!isset($response['redirect'])) {
-            throw new \Exception("SSO falhou");
+    // =========================
+    // 🔐 SSO LOGIN
+    // =========================
+    public function generateSSO($domain)
+    {
+        return $this->request('POST', '/login', [
+            'domain' => $domain
+        ]);
+    }
+
+    // =========================
+    // 🔧 CORE REQUEST
+    // =========================
+    private function request($method, $endpoint, $data = [])
+    {
+        $ch = curl_init();
+
+        $options = [
+            CURLOPT_URL => $this->baseUrl . $endpoint,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Basic ' . $this->auth
+            ],
+            CURLOPT_SSL_VERIFYPEER => false // ⚠️ apenas dev
+        ];
+
+        // Método
+        switch ($method) {
+            case 'POST':
+                $options[CURLOPT_POST] = true;
+                $options[CURLOPT_POSTFIELDS] = json_encode($data);
+                break;
+
+            case 'PUT':
+                $options[CURLOPT_CUSTOMREQUEST] = 'PUT';
+                $options[CURLOPT_POSTFIELDS] = json_encode($data);
+                break;
+
+            case 'GET':
+                // nada extra
+                break;
         }
 
-        return $response['redirect'];
+        curl_setopt_array($ch, $options);
+
+        $response = curl_exec($ch);
+
+        // ❗ erro de rede
+        if ($response === false) {
+            $error = curl_error($ch);
+            throw new \Exception("cURL error: " . $error);
+        }
+
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        // ❗ erro API
+        if ($status >= 400) {
+            throw new \Exception("Plesk API error ({$status}): " . $response);
+        }
+
+        // ❌ NÃO usar curl_close (deprecated em handles modernos)
+
+        return json_decode($response, true);
     }
 }

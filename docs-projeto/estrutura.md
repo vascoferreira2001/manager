@@ -35,10 +35,10 @@
 │  │  │  │  ├─ edit.php
 │  │  │  │  └─ index.php
 │  │  │  ├─ Views/
-│  │  │     └─ dashboard/
-│  │  │        ├─ hosting.php
-│  │  │        ├─ index.php
-│  │  │        └─ manager.php
+│  │  │     ├─ dashboad.php
+│  │  │     └─ layout.php
+│  │  ├─ Auth/
+│  │  │  ├─ Controllers/
 │  │  │  │  ├─ AuthController.php
 │  │  │  │  └─ ProfileController.php
 │  │  │  ├─ Middleware/
@@ -57,25 +57,37 @@
 │  │  │  ├─ Jobs/
 │  │  │  │  └─ InvoiceJob.php
 │  │  │  ├─ Models/
-│  │  │  │  └─ Invoice.php
+│  │  │  │  ├─ Invoice.php
+│  │  │  │  ├─ InvoiceItem.php
+│  │  │  │  ├─ Payment.php
+│  │  │  │  └─ Transction.php
 │  │  │  └─ Services/
-│  │  │     └─ BillingService.php
+│  │  │     ├─ BillingService.php
+│  │  │     └─ PaymentService.php
 │  │  ├─ Clients/
 │  │  │  ├─ Controllers/
-│  │  │  │  └─ ClientController.php
+│  │  │  │  ├─ ClientController.php
+│  │  │  │  ├─ DashboardController.php
+│  │  │  │  └─ HostingController.php
 │  │  │  ├─ Services/
 │  │  │  │  └─ ClientDashboardService.php
 │  │  │  └─ Views/
 │  │  │     └─ dashboard/
 │  │  │        ├─ hosting.php
 │  │  │        ├─ index.php
-│  │  │        └─ manager.php
+│  │  │        └─ manage.php
 │  │  ├─ Domains/ (vazia)
+│  │  ├─ Hosting/
+│  │  │  ├─ Controllers/ (vazia)
+│  │  │  ├─ Models/ (vazia)
+│  │  │  ├─ Services/ (vazia)
+│  │  │  └─ Views/ (vazia)
 │  │  ├─ Orders/
 │  │  │  ├─ Controllers/
 │  │  │  │  └─ OrderController.php
 │  │  │  ├─ Models/
-│  │  │  │  └─ Order.php
+│  │  │  │  ├─ Order.php
+│  │  │  │  └─ OrderItem.php
 │  │  │  └─ Services/
 │  │  │     └─ OrderService.php
 │  │  ├─ Products/
@@ -89,13 +101,10 @@
 │  │  │  ├─ Exceptions/
 │  │  │  │  └─ ProvisioningException.php
 │  │  │  └─ Provisioning/
-│  │  │     ├─ PleskService.php
 │  │  │     └─ ProvisioningService.php
 │  │  ├─ Services/
 │  │  │  └─ RBACService.php
 │  │  └─ Support/ (vazia)
-│  ├─ Repositories/ (vazia)
-│  └─ Services/ (vazia)
 ├─ composer.json
 ├─ composer.lock
 ├─ database.sql

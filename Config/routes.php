@@ -2,29 +2,43 @@
 
 use System\Router;
 use App\Modules\Auth\Middleware\AuthMiddleware;
-use App\Modules\Auth\Middleware\PermissionMiddleware;
 
 /** @var Router $router */
 
-// Public
+// PUBLIC
 $router->get('/', 'HomeController@index');
 
 $router->get('/login', 'Auth\AuthController@loginForm');
 $router->post('/login', 'Auth\AuthController@login');
 $router->get('/logout', 'Auth\AuthController@logout');
 
-// 🔐 Dashboard protegido
-$router->middleware('/dashboard', [
-    \App\Modules\Auth\Middleware\AuthMiddleware::class
-]);
+
+// =====================
+// DASHBOARD
+// =====================
 
 $router->get('/dashboard', 'Clients\DashboardController@index');
-$router->get('/dashboard/hosting', 'Clients\DashboardController@hosting');
 
-// Hosting Management
-$router->get('/dashboard/hosting/manage', 'Clients\HostingController@manage');
-$router->post('/dashboard/hosting/reset-password', 'Clients\HostingController@resetPassword');
-$router->post('/dashboard/hosting/suspend', 'Clients\HostingController@suspend');
-$router->post('/dashboard/hosting/unsuspend', 'Clients\HostingController@unsuspend');
-$router->get('/dashboard/hosting/login', 'Clients\HostingController@loginToPlesk');
+$router->middleware('/dashboard', [
+    AuthMiddleware::class
+]);
 
+
+// =====================
+// HOSTING (CORE MODULE)
+// =====================
+
+$router->get('/hosting', 'Hosting\HostingController@index');
+$router->get('/hosting/manage', 'Hosting\HostingController@manage');
+$router->get('/hosting/login', 'Hosting\HostingController@login');
+
+$router->post('/hosting/reset-password', 'Hosting\HostingController@resetPassword');
+$router->post('/hosting/suspend', 'Hosting\HostingController@suspend');
+$router->post('/hosting/unsuspend', 'Hosting\HostingController@unsuspend');
+
+$router->middleware('/hosting', [AuthMiddleware::class]);
+$router->middleware('/hosting/manage', [AuthMiddleware::class]);
+$router->middleware('/hosting/login', [AuthMiddleware::class]);
+$router->middleware('/hosting/reset-password', [AuthMiddleware::class]);
+$router->middleware('/hosting/suspend', [AuthMiddleware::class]);
+$router->middleware('/hosting/unsuspend', [AuthMiddleware::class]);
