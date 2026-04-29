@@ -2,27 +2,25 @@
 
 namespace App\Modules\Auth\Middleware;
 
-use App\Modules\Auth\Services\RBACService;
+use App\Core\Session;
+use App\Modules\Services\RBACService;
 
 class PermissionMiddleware
 {
-    public static function handle($permission)
+    public static function check($permission = null)
     {
-        session_start();
+        Session::start();
 
-        // Verifica se está autenticado
-        if (!isset($_SESSION['user'])) {
+        $userId = Session::get('user_id');
+
+        if (!$userId) {
             header("Location: /login");
             exit;
         }
 
-        $user = $_SESSION['user'];
-
-        // Verifica permissão
-        if (!RBACService::hasPermission($user['id'], $permission)) {
+        if ($permission && !RBACService::hasPermission($userId, $permission)) {
             http_response_code(403);
-            echo "403 - Sem permissão";
-            exit;
+            die("Sem permissão.");
         }
     }
 }

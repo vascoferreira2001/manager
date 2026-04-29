@@ -23,56 +23,41 @@ class Router
     }
 
     public function dispatch($uri)
-    {
-        $method = $_SERVER['REQUEST_METHOD'];
-        $uri = parse_url($uri, PHP_URL_PATH);
+{
+    $method = $_SERVER['REQUEST_METHOD'];
+    $uri = parse_url($uri, PHP_URL_PATH);
 
+    // Middleware
+    if (isset($this->middlewares[$uri])) {
+        foreach ($this->middlewares[$uri] as $middleware) {
 
-    
-        if (isset($this->middlewares[$uri])) {
-
-    foreach ($this->middlewares[$uri] as $middleware) {
-
-        // 👇 NOVO: suporta middleware com parâmetros
-        if (is_array($middleware)) {
-
-            [$class, $param] = $middleware;
-
-            $class::handle($param);
-
-        } else {
-
-            $middleware::check();
+            if (is_array($middleware)) {
+                [$class, $param] = $middleware;
+                $class::check($param);
+            } else {
+                $middleware::check();
+            }
+        }
     }
-        }
-}
 
-        $action = $this->routes[$method][$uri] ?? null;
+    $action = $this->routes[$method][$uri] ?? null;
 
-        if (!$action) {
-            http_response_code(404);
-            echo "404 Not Found";
-            return;
-        }
+    if (!$action) {
+        http_response_code(404);
+        echo "404 Not Found";
+        return;
+    }
 
-        [$controllerPath, $method] = explode('@', $action);
+    [$controllerPath, $method] = explode('@', $action);
 
-    // Detecta se vem de módulo
-        if (str_contains($controllerPath, '\\')) {
-
-    // Ex: Auth\AuthController
+    if (str_contains($controllerPath, '\\')) {
         [$module, $controller] = explode('\\', $controllerPath);
-
         $controller = "App\\Modules\\$module\\Controllers\\$controller";
-
-        } else {
-
-    // Controllers globais (fallback)
+    } else {
         $controller = "App\\Controllers\\$controllerPath";
-        }
-
-        $instance = new $controller();
-
-        call_user_func([$instance, $method]);
     }
+
+    $instance = new $controller();
+    call_user_func([$instance, $method]);
 }
+    }

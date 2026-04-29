@@ -1,3 +1,5 @@
+## Estrutura Detalhada do Projeto
+
 /project-root
 ├─ .env
 ├─ .git/
@@ -32,11 +34,11 @@
 │  │  │  │  ├─ create.php
 │  │  │  │  ├─ edit.php
 │  │  │  │  └─ index.php
-│  │  │  └─ Views/
-│  │  │     ├─ dashboad.php
-│  │  │     └─ layout.php
-│  │  ├─ Auth/
-│  │  │  ├─ Controllers/
+│  │  │  ├─ Views/
+│  │  │     └─ dashboard/
+│  │  │        ├─ hosting.php
+│  │  │        ├─ index.php
+│  │  │        └─ manager.php
 │  │  │  │  ├─ AuthController.php
 │  │  │  │  └─ ProfileController.php
 │  │  │  ├─ Middleware/
@@ -153,3 +155,36 @@
       ├─ init.php
       ├─ justfile
       └─ lib/
+
+
+   ---
+
+   ## Funcionalidades e Lógicas do Sistema
+
+   ### Gestão de Clientes
+   - CRUD completo de clientes (listar, criar, editar, eliminar)
+   - Proteção por middleware de autenticação
+
+   ### Dashboard do Cliente
+   - Mostra resumo de serviços ativos, faturas e ordens
+   - Lista de serviços de hosting recentes
+   - Detalhe de cada serviço de hosting
+
+   ### Provisionamento Automático
+   - Serviço de provisionamento (`ProvisioningService`) que:
+     - Evita duplicação de contas
+     - Busca dados do cliente e produto
+     - Gera credenciais e domínio
+     - Usa driver Plesk para criar conta de hosting
+     - Regista sucesso ou falha na base de dados
+
+   ### Integração com Plesk
+   - Driver para criar, suspender, alterar password e gerar login SSO para contas de hosting
+
+   ### Gestão de Orders, Products, Invoices
+   - Cada módulo tem controllers, models e services para manipulação dos dados
+   - Ligação entre orders, produtos e planos
+
+   ### Segurança
+   - Middleware de autenticação protege rotas sensíveis
+   - Separação clara entre lógica de negócio (Services), acesso a dados (Models) e apresentação (Views)

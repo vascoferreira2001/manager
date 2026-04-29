@@ -1,6 +1,8 @@
 <?php
 
 use System\Router;
+use App\Modules\Auth\Middleware\AuthMiddleware;
+use App\Modules\Auth\Middleware\PermissionMiddleware;
 
 /** @var Router $router */
 
@@ -25,3 +27,4 @@ $router->post('/dashboard/hosting/reset-password', 'Clients\HostingController@re
 $router->post('/dashboard/hosting/suspend', 'Clients\HostingController@suspend');
 $router->post('/dashboard/hosting/unsuspend', 'Clients\HostingController@unsuspend');
 $router->get('/dashboard/hosting/login', 'Clients\HostingController@loginToPlesk');
+

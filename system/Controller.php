@@ -4,9 +4,14 @@ namespace System;
 
 class Controller
 {
-    protected function view($view, $data = [])
+    protected function view($path, $data = [])
     {
         extract($data);
-        require __DIR__ . "/../app/Views/$view.php";
+
+        ob_start();
+        require $path;
+        $content = ob_get_clean();
+
+        require __DIR__ . '/../app/Views/layouts/base.php';
     }
 }

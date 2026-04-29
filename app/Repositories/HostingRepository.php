@@ -23,11 +23,6 @@ class HostingRepository
         return $this->model->getByClient($clientId);
     }
 
-    public function updatePassword($id, $password)
-    {
-        return $this->model->updatePassword($id, $password);
-    }
-
     public function updateStatus($id, $status)
     {
         return $this->model->updateStatus($id, $status);

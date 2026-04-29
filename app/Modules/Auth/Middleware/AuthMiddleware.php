@@ -2,18 +2,17 @@
 
 namespace App\Modules\Auth\Middleware;
 
+use App\Core\Session;
+
 class AuthMiddleware
 {
     public static function check()
     {
-        session_start();
+        Session::start();
 
-        if (!isset($_SESSION['user'])) {
+        if (!Session::get('user_id') && !Session::get('client_id')) {
             header("Location: /login");
             exit;
         }
     }
 }
-
-
-
