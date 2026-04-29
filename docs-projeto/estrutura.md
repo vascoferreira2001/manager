@@ -14,10 +14,15 @@
 ├─ README.MD
 ├─ app/
 │  ├─ Controllers/
-│  │  ├─ ClientController.php
 │  │  └─ HomeController.php
-│  ├─ Core/ (vazia)
+│  ├─ Core/
+│  │  ├─ BaseController.php
+│  │  ├─ BaseModel.php
+│  │  ├─ Response.php
+│  │  └─ Session.php
 │  ├─ Helpers/
+│  │  ├─ auth.php
+│  │  ├─ response.php
 │  │  └─ security.php
 │  ├─ Middleware/ (vazia)
 │  ├─ Models/
@@ -67,20 +72,31 @@
 │  │  ├─ Clients/
 │  │  │  ├─ Controllers/
 │  │  │  │  ├─ ClientController.php
-│  │  │  │  ├─ DashboardController.php
-│  │  │  │  └─ HostingController.php
+│  │  │  │  └─ DashboardController.php
+│  │  │  ├─ Models/
+│  │  │  │  └─ Hosting.php
 │  │  │  ├─ Services/
 │  │  │  │  └─ ClientDashboardService.php
 │  │  │  └─ Views/
-│  │  │     └─ dashboard/
-│  │  │        ├─ hosting.php
-│  │  │        ├─ index.php
-│  │  │        └─ manage.php
-│  │  ├─ Domains/ (vazia)
-│  │  ├─ Hosting/
+│  │  │     ├─ dashboard/
+│  │  │     │  ├─ hosting.php
+│  │  │     │  ├─ index.php
+│  │  │     │  └─ manage.php
+│  │  │     └─ layout.php
+│  │  ├─ Domains/
 │  │  │  ├─ Controllers/ (vazia)
+│  │  │  ├─ Drivers/ (vazia)
 │  │  │  ├─ Models/ (vazia)
-│  │  │  ├─ Services/ (vazia)
+│  │  │  └─ Services/ (vazia)
+│  │  ├─ Hosting/
+│  │  │  ├─ Controllers/
+│  │  │  │  └─ HostingController.php
+│  │  │  ├─ Models/
+│  │  │  │  └─ Hosting.php
+│  │  │  ├─ Repositories/
+│  │  │  │  └─ HostingRepository.php
+│  │  │  ├─ Services/
+│  │  │  │  └─ HostingService.php
 │  │  │  └─ Views/ (vazia)
 │  │  ├─ Orders/
 │  │  │  ├─ Controllers/
@@ -105,6 +121,12 @@
 │  │  ├─ Services/
 │  │  │  └─ RBACService.php
 │  │  └─ Support/ (vazia)
+│  ├─ Repositories/
+│  │  ├─ InvoiceRepository.php
+│  │  └─ OrderRepository.php
+│  └─ Views/
+│     └─ layouts/
+│        └─ base.php
 ├─ composer.json
 ├─ composer.lock
 ├─ database.sql
@@ -117,7 +139,8 @@
 │  └─ index.php
 ├─ storage/
 │  ├─ cache/ (vazia)
-│  ├─ logs/ (vazia)
+│  ├─ logs/
+│  │  └─ app.log
 │  └─ uploads/ (vazia)
 ├─ system/
 │  ├─ Bootstrap.php
@@ -143,27 +166,27 @@
    │  └─ platform_check.php
    ├─ robthree/
    │  └─ twofactorauth/
+   │     ├─ CHANGELOG.md
+   │     ├─ LICENSE
+   │     ├─ README.md
+   │     ├─ composer.json
+   │     └─ lib/
    └─ stripe/
       ├─ stripe-php/
+      │  ├─ .claude/
+      │  ├─ .gitignore
       │  ├─ CHANGELOG.md
+      │  ├─ CODEGEN_VERSION
+      │  ├─ CONTRIBUTING.md
       │  ├─ LICENSE
+      │  ├─ OPENAPI_VERSION
       │  ├─ README.md
+      │  ├─ VERSION
       │  ├─ composer.json
+      │  ├─ data/
+      │  ├─ init.php
+      │  ├─ justfile
       │  └─ lib/
-      ├─ .claude/
-      ├─ .gitignore
-      ├─ CHANGELOG.md
-      ├─ CODEGEN_VERSION
-      ├─ CONTRIBUTING.md
-      ├─ LICENSE
-      ├─ OPENAPI_VERSION
-      ├─ README.md
-      ├─ VERSION
-      ├─ composer.json
-      ├─ data/
-      ├─ init.php
-      ├─ justfile
-      └─ lib/
 
 
    ---

@@ -189,3 +189,19 @@ CREATE TABLE product_plans (
 );
 
 ALTER TABLE order_items ADD product_id INT;
+
+CREATE TABLE billing_documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    type VARCHAR(20) NOT NULL,
+    number VARCHAR(50) NOT NULL,
+    client_id INT NOT NULL,
+    order_id INT NULL,
+    nif VARCHAR(20) NOT NULL,
+    vat_country VARCHAR(5) NOT NULL,
+    vat_rate DECIMAL(5,2) NOT NULL,
+    net_total DECIMAL(10,2) NOT NULL,
+    vat_total DECIMAL(10,2) NOT NULL,
+    gross_total DECIMAL(10,2) NOT NULL,
+    status VARCHAR(30) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
