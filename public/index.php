@@ -14,30 +14,53 @@ use App\Core\Support\Container;
 use App\Core\Support\Logger;
 use App\Core\Security\Session;
 use App\Core\Security\Csrf;
+use App\Core\Database\Database;
+use App\Core\Database\BaseModel;
 
-
-// 1) Load env
+// 1️⃣ Carregar variáveis de ambiente
 Env::load(dirname(__DIR__) . '/.env');
 
-// 2) Error handling
+// 2️⃣ Error handler
 ErrorHandler::register(config('app')['debug'] ?? false);
 
-// 3) Boot container (very small)
+// 3️⃣ Criar container (AQUI)
 $container = new Container();
-$container->set(Logger::class, fn() => new Logger(base_path('storage/logs/app.log')));
-$container->set(Session::class, fn() => new Session());
-$container->set(Csrf::class, fn() => new Csrf($container->get(Session::class)));
 
-// 4) Start session
+// 4️⃣ Registar serviços base
+$container->set(Logger::class, fn() =>
+    new Logger(base_path('storage/logs/app.log'))
+);
+
+$container->set(Session::class, fn() =>
+    new Session()
+);
+
+$container->set(Csrf::class, fn() =>
+    new Csrf($container->get(Session::class))
+);
+
+// ✅ 5️⃣ REGISTAR DATABASE NO CONTAINER
+$container->set(Database::class, fn() =>
+    new Database(config('database'))
+);
+
+// ✅ 6️⃣ INJETAR DATABASE NO BaseModel (AQUI MESMO)
+BaseModel::setDatabase(
+    $container->get(Database::class)
+);
+
+// 7️⃣ Iniciar sessão
 $container->get(Session::class)->start();
 
-// 5) Build request/response
-$request = Request::capture();
+// 8️⃣ Criar Request / Response
+$request  = Request::capture();
 $response = new Response();
 
-// 6) Router + routes
+// 9️⃣ Criar Router
 $router = new Router($container, $request, $response);
+
+// 🔟 Carregar rotas
 require base_path('app/Config/routes.php');
 
-// 7) Dispatch
+// 1️⃣1️⃣ Dispatch
 $router->dispatch();
