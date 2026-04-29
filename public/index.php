@@ -20,6 +20,13 @@ use App\Core\Database\BaseModel;
 // 1️⃣ Carregar variáveis de ambiente
 Env::load(dirname(__DIR__) . '/.env');
 
+if (!file_exists(base_path('storage/installed.lock'))) {
+    if (!str_starts_with($_SERVER['REQUEST_URI'], '/install')) {
+        header('Location: /install');
+        exit;
+    }
+}
+
 // 2️⃣ Error handler
 ErrorHandler::register(config('app')['debug'] ?? false);
 
