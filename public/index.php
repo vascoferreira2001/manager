@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/app/Core/Support/helpers.php';
 
 use App\Core\Support\Env;
 use App\Core\Support\ErrorHandler;
@@ -13,6 +14,7 @@ use App\Core\Support\Container;
 use App\Core\Support\Logger;
 use App\Core\Security\Session;
 use App\Core\Security\Csrf;
+
 
 // 1) Load env
 Env::load(dirname(__DIR__) . '/.env');
@@ -35,7 +37,7 @@ $response = new Response();
 
 // 6) Router + routes
 $router = new Router($container, $request, $response);
-require base_path('Config/routes.php');
+require base_path('app/Config/routes.php');
 
 // 7) Dispatch
 $router->dispatch();

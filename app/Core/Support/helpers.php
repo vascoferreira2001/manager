@@ -9,13 +9,15 @@ function env(string $key, mixed $default = null): mixed
 
 function base_path(string $path = ''): string
 {
-    $root = dirname(__DIR__, 3); // /app/Core/Support -> /project-root
+    $root = dirname(__DIR__, 3); // project-root
     return $path ? $root . DIRECTORY_SEPARATOR . $path : $root;
 }
 
 function config(string $file): array
 {
-    $path = base_path("Config/{$file}.php");
-    if (!is_file($path)) return [];
+    $path = base_path("app/Config/{$file}.php");
+    if (!is_file($path)) {
+        return [];
+    }
     return require $path;
 }
